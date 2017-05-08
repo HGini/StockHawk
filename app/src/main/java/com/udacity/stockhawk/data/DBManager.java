@@ -31,24 +31,27 @@ public class DBManager {
     private static void populateHistory(Context context, Cursor cursor, ArrayList<HistoricalQuote> history) {
         if (context != null && cursor != null && history != null) {
             String historyString = cursor.getString(cursor.getColumnIndex(Contract.Quote.COLUMN_HISTORY));
-            String[] quotes = historyString.split("\\n");
-            for (String quote : quotes) {
-                String[] quoteInfo = quote.split(",");
+            
+            if (!TextUtils.isEmpty(historyString)) {
+                String[] quotes = historyString.split("\\n");
+                for (String quote : quotes) {
+                    String[] quoteInfo = quote.split(",");
 
-                // Get quote's time
-                long quoteTimeLong = Long.valueOf(quoteInfo[0].trim());
-                Calendar quoteTime = Calendar.getInstance();
-                quoteTime.setTimeInMillis(quoteTimeLong);
+                    // Get quote's time
+                    long quoteTimeLong = Long.valueOf(quoteInfo[0].trim());
+                    Calendar quoteTime = Calendar.getInstance();
+                    quoteTime.setTimeInMillis(quoteTimeLong);
 
-                // Get quote's close price
-                float quotePriceFloat = Float.valueOf(quoteInfo[1].trim());
-                BigDecimal quoteClosePrice = BigDecimal.valueOf(quotePriceFloat);
+                    // Get quote's close price
+                    float quotePriceFloat = Float.valueOf(quoteInfo[1].trim());
+                    BigDecimal quoteClosePrice = BigDecimal.valueOf(quotePriceFloat);
 
-                // Create historical quote
-                HistoricalQuote historicalQuote = new HistoricalQuote();
-                historicalQuote.setDate(quoteTime);
-                historicalQuote.setClose(quoteClosePrice);
-                history.add(historicalQuote);
+                    // Create historical quote
+                    HistoricalQuote historicalQuote = new HistoricalQuote();
+                    historicalQuote.setDate(quoteTime);
+                    historicalQuote.setClose(quoteClosePrice);
+                    history.add(historicalQuote);
+                }
             }
         }
     }
