@@ -29,6 +29,7 @@ public class StockDetailActivity extends AppCompatActivity {
     private TextView symbolView;
     private TextView priceView;
     private TextView changeView;
+    private TimeLineView timeLineView;
 
     private DecimalFormat dollarFormatWithPlus;
     private DecimalFormat dollarFormat;
@@ -59,6 +60,9 @@ public class StockDetailActivity extends AppCompatActivity {
         symbolView = (TextView) view.findViewById(R.id.symbol);
         priceView = (TextView) view.findViewById(R.id.price);
         changeView = (TextView) view.findViewById(R.id.change);
+        timeLineView = (TimeLineView) view.findViewById(R.id.timeline_view);
+        timeLineView.setWidth(getResources().getDimension(R.dimen.timeline_width));
+        timeLineView.setHeight(getResources().getDimension(R.dimen.timeline_height));
     }
 
     private void bindData() {
@@ -108,7 +112,8 @@ public class StockDetailActivity extends AppCompatActivity {
     private void drawPriceTimeSeries() {
         if (!TextUtils.isEmpty(stockSymbol)) {
             ArrayList<HistoricalQuote> history = DBManager.getHistory(this, stockSymbol);
-            // TODO: Draw the time series
+            timeLineView.setHistory(history);
+            timeLineView.invalidate();
         }
     }
 }

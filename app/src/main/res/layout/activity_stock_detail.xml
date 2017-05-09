@@ -7,7 +7,7 @@
 
     <include layout="@layout/list_item_quote"/>
 
-    <View
+    <com.udacity.stockhawk.ui.TimeLineView
         android:id="@+id/timeline_view"
         android:layout_width="match_parent"
         android:layout_height="300dp"/>
