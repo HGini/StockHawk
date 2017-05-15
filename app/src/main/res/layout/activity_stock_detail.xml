@@ -3,13 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center">
+    android:paddingTop="50dp">
 
     <include layout="@layout/list_item_quote"/>
 
     <com.udacity.stockhawk.ui.TimeLineView
         android:id="@+id/timeline_view"
         android:layout_width="match_parent"
-        android:layout_height="300dp"/>
+        android:layout_height="@dimen/timeline_height"
+        android:layout_margin="16dp"/>
 
 </LinearLayout>

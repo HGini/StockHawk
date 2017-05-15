@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -61,8 +62,14 @@ public class StockDetailActivity extends AppCompatActivity {
         priceView = (TextView) view.findViewById(R.id.price);
         changeView = (TextView) view.findViewById(R.id.change);
         timeLineView = (TimeLineView) view.findViewById(R.id.timeline_view);
-        timeLineView.setWidth(getResources().getDimension(R.dimen.timeline_width));
         timeLineView.setHeight(getResources().getDimension(R.dimen.timeline_height));
+        timeLineView.setWidth(getScreenWidth());
+    }
+
+    private float getScreenWidth() {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        return displayMetrics.widthPixels;
     }
 
     private void bindData() {
