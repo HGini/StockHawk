@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingTop="50dp">
+    android:paddingTop="80dp">
 
     <include layout="@layout/list_item_quote"/>
 
@@ -11,6 +11,8 @@
         android:id="@+id/timeline_view"
         android:layout_width="match_parent"
         android:layout_height="@dimen/timeline_height"
-        android:layout_margin="16dp"/>
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="30dp"/>
 
 </LinearLayout>

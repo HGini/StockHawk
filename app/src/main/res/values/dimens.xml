@@ -1,5 +1,5 @@
 <resources>
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="widget_margin">8dp</dimen>
-    <dimen name="timeline_height">150dp</dimen>
+    <dimen name="timeline_height">200dp</dimen>
 </resources>
