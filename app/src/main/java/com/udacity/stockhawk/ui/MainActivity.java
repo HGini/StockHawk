@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -25,8 +26,17 @@ import com.udacity.stockhawk.data.Contract;
 import com.udacity.stockhawk.data.PrefUtils;
 import com.udacity.stockhawk.sync.QuoteSyncJob;
 
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
+import yahoofinance.Stock;
+import yahoofinance.YahooFinance;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>,
         SwipeRefreshLayout.OnRefreshListener,
@@ -136,7 +146,77 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             }
 
             PrefUtils.addStock(this, symbol);
-            QuoteSyncJob.syncImmediately(this);
+            new CheckIfSymbolExistsTask(this).execute(symbol);
+        }
+    }
+
+    private class CheckIfSymbolExistsTask extends AsyncTask<String, Void, Boolean> {
+
+        String symbol;
+        Context context;
+
+        CheckIfSymbolExistsTask(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            boolean symbolExists = true;
+            if (context != null) {
+
+                try {
+                    symbol = params[0];
+
+                    Set<String> stockPref = PrefUtils.getStocks(context);
+                    Set<String> stockCopy = new HashSet<>();
+                    stockCopy.addAll(stockPref);
+                    String[] stockArray = stockPref.toArray(new String[stockPref.size()]);
+
+                    Timber.d(stockCopy.toString());
+
+                    if (stockArray.length == 0) {
+                        return false;
+                    }
+
+                    Map<String, Stock> quotes = YahooFinance.get(stockArray, true);
+                    Iterator<String> iterator = stockCopy.iterator();
+
+                    Timber.d(quotes.toString());
+
+                    while (iterator.hasNext()) {
+                        String symbol = iterator.next();
+                        Stock stock = quotes.get(symbol);
+
+                        if (stock == null) {
+                            symbolExists = false;
+                            break;
+                        }
+                    }
+
+                } catch (IOException ex) {
+                    symbolExists = false;
+                    ex.printStackTrace();
+                }
+
+            } else {
+                symbolExists = false;
+            }
+
+            return symbolExists;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean symbolExists) {
+            super.onPostExecute(symbolExists);
+
+            if (context != null) {
+                if (symbolExists) {
+                    QuoteSyncJob.syncImmediately(context);
+                } else {
+                    Toast.makeText(context, getString(R.string.toast_invalid_symbol), Toast.LENGTH_LONG).show();
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+            }
         }
     }
 
