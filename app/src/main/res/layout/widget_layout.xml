@@ -4,15 +4,22 @@
     android:layout_height="match_parent"
     android:layout_margin="@dimen/widget_margin">
 
-    <AdapterViewFlipper
-        android:id="@+id/view_flipper"
+    <StackView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/stack_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:loopViews="true"></AdapterViewFlipper>
+        android:gravity="center"
+        android:loopViews="true" />
 
-    <View
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/empty_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:background="@color/colorPrimaryDark"
+        android:textColor="#ffffff"
+        android:textStyle="bold"
+        android:text="@string/empty_screen_message"
+        android:textSize="20sp" />
 
 </FrameLayout>

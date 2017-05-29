@@ -24,18 +24,17 @@ import static android.widget.RemoteViewsService.*;
 
 public class CustomRemoteViewsFactory implements RemoteViewsFactory {
 
-    private Context mContext;
-    private int mAppWidgetId;
     private DecimalFormat dollarFormat;
     private List<WidgetItem> mWidgetItems = new ArrayList<>();
+    private Context mContext;
+    private int mAppWidgetId;
 
     public CustomRemoteViewsFactory(Context context, Intent intent) {
         mContext = context;
-        dollarFormat = (DecimalFormat) NumberFormat.getCurrencyInstance(Locale.US);
         mAppWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
                 AppWidgetManager.INVALID_APPWIDGET_ID);
+        dollarFormat = (DecimalFormat) NumberFormat.getCurrencyInstance(Locale.US);
     }
-
     public void onCreate() {
         if (mContext != null) {
             Cursor cursor = mContext.getContentResolver().query(
@@ -56,55 +55,38 @@ public class CustomRemoteViewsFactory implements RemoteViewsFactory {
             }
         }
     }
-
-    @Override
-    public void onDataSetChanged() {
-
-    }
-
-    @Override
     public void onDestroy() {
-
+        mWidgetItems.clear();
     }
-
-    @Override
     public int getCount() {
-        return 0;
+        return mWidgetItems.size();
     }
-
-
     public RemoteViews getViewAt(int position) {
         RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.widget_item);
         rv.setTextViewText(R.id.tv_stock_name, mWidgetItems.get(position).getStockSymbol());
         rv.setTextViewText(R.id.tv_stock_price, mWidgetItems.get(position).getStockPrice());
 
         Bundle extras = new Bundle();
-        extras.putInt(CustomAppWidgetProvider.ITEM_POSITION, position);
+        extras.putInt(CustomAppWidgetProvider.EXTRA_ITEM, position);
         Intent fillInIntent = new Intent();
         fillInIntent.putExtras(extras);
         rv.setOnClickFillInIntent(R.id.widget_item, fillInIntent);
 
         return rv;
     }
-
-    @Override
     public RemoteViews getLoadingView() {
         return null;
     }
-
-    @Override
     public int getViewTypeCount() {
-        return 0;
+        return 1;
     }
-
-    @Override
     public long getItemId(int position) {
-        return 0;
+        return position;
     }
-
-    @Override
     public boolean hasStableIds() {
-        return false;
+        return true;
     }
+    public void onDataSetChanged() {
 
+    }
 }
