@@ -14,6 +14,8 @@ import yahoofinance.histquotes.HistoricalQuote;
 
 public class DBManager {
 
+    public static final int STOCK_LOADER = 0;
+
     public static ArrayList<HistoricalQuote> getHistory(final Context context, final String stockSymbol) {
         ArrayList<HistoricalQuote> history = new ArrayList<>();
         if (context != null && !TextUtils.isEmpty(stockSymbol)) {

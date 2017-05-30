@@ -14,6 +14,8 @@ public final class Contract {
     private static final Uri BASE_URI = Uri.parse("content://" + AUTHORITY);
 
     private Contract() {
+        // Avoid instances to be created from within this class
+        throw new AssertionError("Sorry, this class cannot be instantiated");
     }
 
     @SuppressWarnings("unused")

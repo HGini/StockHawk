@@ -3,6 +3,9 @@ package com.udacity.stockhawk.ui;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -19,11 +22,13 @@ import java.util.ArrayList;
 import java.util.Locale;
 import yahoofinance.histquotes.HistoricalQuote;
 
+import static com.udacity.stockhawk.data.DBManager.STOCK_LOADER;
+
 /**
  * Created by Hemangini on 5/6/17.
  */
 
-public class StockDetailActivity extends AppCompatActivity {
+public class StockDetailActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
     private String stockSymbol = null;
 
@@ -54,7 +59,7 @@ public class StockDetailActivity extends AppCompatActivity {
             stockSymbol = args.getString(getString(R.string.intent_stock_symbol));
         }
 
-        bindData();
+        getSupportLoaderManager().initLoader(STOCK_LOADER, null, this);
     }
 
     private void initView(View view) {
@@ -72,7 +77,7 @@ public class StockDetailActivity extends AppCompatActivity {
         return displayMetrics.widthPixels;
     }
 
-    private void bindData() {
+    private void bindData(Cursor cursor) {
         if (stockSymbol != null) {
             dollarFormat = (DecimalFormat) NumberFormat.getCurrencyInstance(Locale.US);
             dollarFormatWithPlus = (DecimalFormat) NumberFormat.getCurrencyInstance(Locale.US);
@@ -81,9 +86,6 @@ public class StockDetailActivity extends AppCompatActivity {
             percentageFormat.setMaximumFractionDigits(2);
             percentageFormat.setMinimumFractionDigits(2);
             percentageFormat.setPositivePrefix("+");
-
-            Cursor cursor = getContentResolver().query(Contract.Quote.makeUriForStock(stockSymbol),
-                    null, null, null, null);
 
             if (cursor != null) {
                 if (cursor.moveToFirst()) {
@@ -109,7 +111,6 @@ public class StockDetailActivity extends AppCompatActivity {
                         changeView.setText(percentage);
                     }
                 }
-                cursor.close();
             }
 
             drawPriceTimeSeries();
@@ -122,5 +123,25 @@ public class StockDetailActivity extends AppCompatActivity {
             timeLineView.setHistory(history);
             timeLineView.invalidate();
         }
+    }
+
+    @Override
+    public Loader onCreateLoader(int id, Bundle args) {
+        return new CursorLoader(this,
+                Contract.Quote.URI,
+                Contract.Quote.QUOTE_COLUMNS.toArray(new String[]{}),
+                null, null, Contract.Quote.COLUMN_SYMBOL);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if (data != null && data.getCount() > 0) {
+            bindData(data);
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader loader) {
+
     }
 }
