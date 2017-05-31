@@ -14,7 +14,7 @@ import android.view.View;
 import android.widget.TextView;
 import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.data.Contract;
-import com.udacity.stockhawk.data.DBManager;
+import com.udacity.stockhawk.data.SQLiteUtils;
 import com.udacity.stockhawk.data.PrefUtils;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 import yahoofinance.histquotes.HistoricalQuote;
 
-import static com.udacity.stockhawk.data.DBManager.STOCK_LOADER;
+import static com.udacity.stockhawk.data.SQLiteUtils.STOCK_LOADER;
 
 /**
  * Created by Hemangini on 5/6/17.
@@ -119,7 +119,7 @@ public class StockDetailActivity extends AppCompatActivity implements LoaderMana
 
     private void drawPriceTimeSeries() {
         if (!TextUtils.isEmpty(stockSymbol)) {
-            ArrayList<HistoricalQuote> history = DBManager.getHistory(this, stockSymbol);
+            ArrayList<HistoricalQuote> history = SQLiteUtils.getHistory(this, stockSymbol);
             timeLineView.setHistory(history);
             timeLineView.invalidate();
         }

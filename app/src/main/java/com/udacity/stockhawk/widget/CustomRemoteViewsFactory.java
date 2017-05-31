@@ -35,7 +35,50 @@ public class CustomRemoteViewsFactory implements RemoteViewsFactory {
                 AppWidgetManager.INVALID_APPWIDGET_ID);
         dollarFormat = (DecimalFormat) NumberFormat.getCurrencyInstance(Locale.US);
     }
-    public void onCreate() {
+
+    public void onCreate() {}
+
+    public void onDestroy() {
+        mWidgetItems.clear();
+    }
+
+    public int getCount() {
+        return mWidgetItems.size();
+    }
+
+    public RemoteViews getViewAt(int position) {
+        RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.widget_item);
+        rv.setTextViewText(R.id.tv_stock_name, mWidgetItems.get(position).getStockSymbol());
+        rv.setTextViewText(R.id.tv_stock_price, mWidgetItems.get(position).getStockPrice());
+
+        Bundle extras = new Bundle();
+        extras.putInt(CustomAppWidgetProvider.EXTRA_ITEM, position);
+        Intent fillInIntent = new Intent();
+        fillInIntent.putExtras(extras);
+        rv.setOnClickFillInIntent(R.id.widget_item, fillInIntent);
+
+        return rv;
+    }
+
+    public RemoteViews getLoadingView() {
+        return null;
+    }
+
+    public int getViewTypeCount() {
+        return 1;
+    }
+
+    public long getItemId(int position) {
+        return position;
+    }
+
+    public boolean hasStableIds() {
+        return true;
+    }
+
+    public void onDataSetChanged() {
+        mWidgetItems.clear();
+
         if (mContext != null) {
             Cursor cursor = mContext.getContentResolver().query(
                     Contract.Quote.URI,
@@ -54,39 +97,5 @@ public class CustomRemoteViewsFactory implements RemoteViewsFactory {
                 cursor.close();
             }
         }
-    }
-    public void onDestroy() {
-        mWidgetItems.clear();
-    }
-    public int getCount() {
-        return mWidgetItems.size();
-    }
-    public RemoteViews getViewAt(int position) {
-        RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.widget_item);
-        rv.setTextViewText(R.id.tv_stock_name, mWidgetItems.get(position).getStockSymbol());
-        rv.setTextViewText(R.id.tv_stock_price, mWidgetItems.get(position).getStockPrice());
-
-        Bundle extras = new Bundle();
-        extras.putInt(CustomAppWidgetProvider.EXTRA_ITEM, position);
-        Intent fillInIntent = new Intent();
-        fillInIntent.putExtras(extras);
-        rv.setOnClickFillInIntent(R.id.widget_item, fillInIntent);
-
-        return rv;
-    }
-    public RemoteViews getLoadingView() {
-        return null;
-    }
-    public int getViewTypeCount() {
-        return 1;
-    }
-    public long getItemId(int position) {
-        return position;
-    }
-    public boolean hasStableIds() {
-        return true;
-    }
-    public void onDataSetChanged() {
-
     }
 }

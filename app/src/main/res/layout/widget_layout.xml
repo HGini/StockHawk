@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:background="@color/colorPrimaryDark"
+        android:background="@android:color/darker_gray"
         android:textColor="#ffffff"
         android:textStyle="bold"
         android:text="@string/empty_screen_message"

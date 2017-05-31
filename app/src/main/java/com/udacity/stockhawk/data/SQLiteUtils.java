@@ -12,7 +12,7 @@ import yahoofinance.histquotes.HistoricalQuote;
  * Created by Hemangini on 5/8/17.
  */
 
-public class DBManager {
+public class SQLiteUtils {
 
     public static final int STOCK_LOADER = 0;
 
